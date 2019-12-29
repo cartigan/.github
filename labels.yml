@@ -18,7 +18,13 @@ labels:
     description: "Optimize an existing feature"
   - name: "kind/feature"
     color: "#A2EEEF"
-    description: "New feature or request"
+    description: "New feature request"
+  - name: "kind/infrastructure"
+    color: "#387499"
+    description: "Issue regarding the local or cloud infrastructure setup"
+  - name: "kind/automation"
+    color: "#387499"
+    description: "Automate your tasks"
 
   # Feedback.
   - name: "feedback/question"
@@ -86,3 +92,11 @@ labels:
   - name: "environment/prod"
     color: "#F7FBFF"
     description: "Production environment"
+
+  # Bots.
+  - name: "dependencies"
+    color: "#0366d6"
+    description: "Pull requests that update a dependency file"
+  - name: "do-not-merge"
+    color: "#DC143C"
+    description: "Prevents PRs with this label to be merged"
