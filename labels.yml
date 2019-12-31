@@ -25,6 +25,9 @@ labels:
   - name: "kind/automation"
     color: "#387499"
     description: "Automate your tasks"
+  - name: "kind/security"
+    color: "#993333"
+    description: "CVEs and other security flaws"
 
   # Feedback.
   - name: "feedback/question"
