@@ -49,3 +49,4 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: coverage/clover.xml
+          yml: .github/codecov.yml
