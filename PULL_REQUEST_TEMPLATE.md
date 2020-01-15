@@ -22,7 +22,8 @@ Add a screenshot if applicable.
 
 <!--
 Motivation and Context
-Why is this change required? What problem does it solve? -->
+Why is this change required? What problem does it solve?
+-->
 
 
 <!--
@@ -47,6 +48,6 @@ We're here to help!
 
 <!--
 Place the URL of the issue here if this PR fixes an existing issue.
-Use either the `Username/Repository#` syntax (preferred) or the *FULL* URL.
+Use either the `username/repository#` syntax (preferred) or the *FULL* URL.
 -->
-Fixes: fitnessfunnel/<ff_project>#
+Fixes: cartigan/<cgn_project>#
