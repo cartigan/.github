@@ -1,0 +1,112 @@
+name: ci
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+  push:
+    branches:
+      - master
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - uses: actions-rs/cargo@v1
+        with:
+          command: check
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - uses: actions-rs/cargo@v1
+        with:
+          command: test
+
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - run: rustup component add rustfmt
+      - uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: --all -- --check
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - run: rustup component add clippy
+      - uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: -- -D warnings
+
+  build:
+      name: build
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@master
+        - uses: actions-rs/cargo@v1
+          with:
+            command: build
+
+  release:
+    needs:
+      - build
+      - check
+      - format
+      - lint
+      - test
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+      - uses: actions/checkout@master
+      - name: Build in release mode
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release --all-features
+      - name: Install release tools
+        run: |
+          mkdir -p bin
+          echo "::add-path::$GITHUB_WORKSPACE/bin"
+          curl -sLO https://github.com/rgreinho/keeparelease/releases/download/1.3.0/keeparelease-1.3.0-linux-amd64
+          chmod a+x keeparelease-1.3.0-linux-amd64
+          mv keeparelease-1.3.0-linux-amd64 bin/keeparelease
+      - name: Prepare release content
+        run: keeparelease -x > ${{ github.workflow }}-release.md
+      - name: Publish the release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          body_path: ${{ github.workflow }}-release.md
